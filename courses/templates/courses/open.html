@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
+      <form method="post" action="{% url 'courses:open' %}" role="form">
+      {% csrf_token %}
+      {% if errors %}
+        <div class="alert alert-danger" role="alert">
+        {% for e in errors %}
+          <p class="bg-danger">{{ e }}</p>
+        {% endfor %}
+        </div>
+      {% endif %}
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" name="name" value="{{ name }}">
+        </div>
+        <div class="form-group">
+          <label for="short-description">Short description</label>
+          <input type="text" id="short-description" class="form-control" name="short_description" value="{{ short_description }}">
+        </div>
+        <button type="submit" class="btn btn-success">Open a new course</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

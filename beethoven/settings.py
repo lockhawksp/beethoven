@@ -41,7 +41,8 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'accounts'
+    'accounts',
+    'courses'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -109,3 +110,5 @@ SITE_ID = 1
 JQUERY_URL = '/static/libs/jquery/jquery-1.11.1.min.js'
 
 ACCOUNT_ADAPTER = 'accounts.adapter.AccountAdapter'
+
+LOGIN_URL = 'account_login'
