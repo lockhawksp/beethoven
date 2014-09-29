@@ -106,6 +106,6 @@ AUTHENTICATION_BACKENDS = (
 
 SITE_ID = 1
 
-JQUERY_URL = '/static/libs/bootstrap/js/bootstrap.min.js'
+JQUERY_URL = '/static/libs/jquery/jquery-1.11.1.min.js'
 
 ACCOUNT_ADAPTER = 'accounts.adapter.AccountAdapter'
