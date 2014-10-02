@@ -22,7 +22,7 @@ class Quiz(models.Model):
     article = models.ForeignKey(Article)
     meta_id = models.CharField(max_length=36)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(null=True)
     assigned_to = models.ForeignKey(Profile)
     due = models.DateTimeField(null=True)
     created_by = models.ManyToManyField(
@@ -32,14 +32,14 @@ class Quiz(models.Model):
 
     # Student only
     attempted = models.BooleanField(default=False)
-    last_attempt = models.DateTimeField()
+    last_attempt = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.pk
 
 
 class Question(models.Model):
-    quiz = models.ForeignKey(Quiz)
+    quiz = models.ForeignKey(Quiz, related_name='questions')
     question = models.CharField(max_length=100)
     standard_answer = models.CharField(max_length=100, null=True)
     sequence = models.IntegerField()
