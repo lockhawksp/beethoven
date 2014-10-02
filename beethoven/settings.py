@@ -41,8 +41,10 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'rest_framework',
     'accounts',
-    'courses'
+    'courses',
+    'quizzes'
 )
 
 MIDDLEWARE_CLASSES = (
