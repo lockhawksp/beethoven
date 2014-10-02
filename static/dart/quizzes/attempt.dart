@@ -3,9 +3,31 @@ import 'dart:html';
 import 'dart:js';
 
 
-Map getContext() {
-  Map data = JSON.decode(context['context']);
-  return data;
+Map _context = null;
+
+// Map between id attribute of answer input element and id of question which
+// the input element is for
+Map answerInputIds = {};
+
+
+getContext(String key) {
+  if (_context == null) {
+    _context = JSON.decode(context['context']);
+  }
+  return _context[key];
+}
+
+
+Map cookiesToMap() {
+  Map cookies = {};
+  List items = document.cookie.split(new RegExp(r'; '));
+  for (String item in items) {
+    int i = item.indexOf('=');
+    String key = item.substring(0, i);
+    String value = item.substring(i+1, item.length);
+    cookies[key] = value;
+  }
+  return cookies;
 }
 
 
@@ -38,6 +60,11 @@ void fetchQuiz(String url) {
 }
 
 
+String getAnswerInputId(int id) {
+  return 'answer-for-question-$id';
+}
+
+
 Element questionDataToView(Map data) {
   int id = data['id'];
   String question = data['question'];
@@ -47,10 +74,11 @@ Element questionDataToView(Map data) {
   questionDiv.classes.add('form-group');
 
   // Input for answer
-  String answerId = 'question-$id';
+  String answerId = getAnswerInputId(id);
   InputElement answerInput = new InputElement();
-  answerInput.classes.add('form-control');
+  answerInput.classes.add('form-control answer-input');
   answerInput.id = answerId;
+  answerInput.attributes['data-question-id'] = id.toString();
 
   // Label
   LabelElement label = new LabelElement();
@@ -68,6 +96,8 @@ void renderQuestions(List questions) {
   DivElement questionsDiv = querySelector('#questions') as DivElement;
   for (Map data in questions) {
     questionsDiv.children.add(questionDataToView(data));
+    int id = data['id'];
+    answerInputIds[getAnswerInputId(id)] = id;
   }
 
   ButtonElement submitButton = new ButtonElement();
@@ -75,6 +105,7 @@ void renderQuestions(List questions) {
   submitButton.classes.add('btn btn-success');
   submitButton.id = 'submit-answers';
   submitButton.text = 'Submit answers';
+  submitButton.onClick.listen(submitAnswers);
 
   questionsDiv.children.add(submitButton);
 }
@@ -90,7 +121,31 @@ void renderQuiz(responseText) {
 }
 
 
+List collectAnswers() {
+  List answers = [];
+  for (String answerId in answerInputIds.keys) {
+    Map answer = {
+        'question_id': answerInputIds[answerId],
+        'answer': (querySelector('#$answerId') as InputElement).value
+    };
+    answers.add(answer);
+  }
+  return answers;
+}
+
+
+void submitAnswers(Event e) {
+  e.preventDefault();
+  String data = JSON.encode({'answers': collectAnswers()});
+
+  HttpRequest request = new HttpRequest();
+  String url = getContext('submit_answers_url');
+  request.open('POST', url);
+  request.setRequestHeader('X-CSRFToken', cookiesToMap()['csrftoken']);
+  request.send(data);
+}
+
+
 void main() {
-  Map context = getContext();
-  fetchQuiz(context['quiz_details_url']);
+  fetchQuiz(getContext('quiz_details_url'));
 }
