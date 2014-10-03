@@ -16,6 +16,20 @@ class Article(models.Model):
         return self.title
 
 
+class MetaQuiz(models.Model):
+    course = models.ForeignKey(Course)
+    article = models.ForeignKey(Article, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    due = models.DateTimeField(null=True)
+    # created_by = models.ManyToManyField(
+    #     Profile, related_name='created_quizzes'
+    # )
+
+    def __str__(self):
+        return self.pk
+
+
 class Quiz(models.Model):
     # Staff only
     course = models.ForeignKey(Course)
