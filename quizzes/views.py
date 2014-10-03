@@ -5,10 +5,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework import generics, mixins
 
 from courses.models import Course
-from quizzes.models import Article, Quiz
+from quizzes.models import Article, MetaQuiz, Quiz
 from quizzes.serializers import (ArticleSerializer,
                                  QuizSerializer)
-from quizzes.services import create_meta_quiz
+from quizzes.services import create_meta_quiz, create_article
+from quizzes.forms import EditArticleForm
 
 
 @login_required
@@ -29,6 +30,42 @@ def create(request):
 
 @login_required
 def edit_article(request, quiz_id):
+    quiz = get_object_or_404(MetaQuiz, pk=quiz_id)
+
+    if request.method == 'GET':
+        context = {'quiz_id': quiz_id}
+        return render(request, 'quizzes/edit_article.html', context)
+
+    else:
+        form = EditArticleForm(request.POST)
+
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            source_url = form.cleaned_data['source_url']
+            content = form.cleaned_data['content']
+            create_article(quiz, title, content, source_url)
+
+            kwargs = {'quiz_id': quiz_id}
+            return redirect(reverse('quizzes:edit_questions', kwargs=kwargs))
+
+        else:
+            context = {
+                'quiz_id': quiz_id,
+                'errors': []
+            }
+
+            errors = context['errors']
+            for field in form:
+                if field.errors:
+                    errors.extend(field.errors)
+                else:
+                    context[field.name] = field.data
+
+            return render(request, 'quizzes/edit_article.html', context)
+
+
+@login_required
+def edit_questions(request, quiz_id):
     pass
 
 
