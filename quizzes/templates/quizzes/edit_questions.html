@@ -10,15 +10,24 @@
           <h3 class="panel-title">Questions</h3>
         </div>
         <div class="panel-body">
+        {% if errors %}
+          <div class="alert alert-danger" role="alert">
+          {% for e in errors %}
+            <p class="bg-danger">{{ e }}</p>
+          {% endfor %}
+          </div>
+        {% endif %}
           <button id="add-question" class="btn btn-primary">Add</button>
-          <form role="form">
+          <form method="post" action="{% url 'quizzes:edit_questions' quiz_id %}" id="questions-form" role="form">
+          {% csrf_token %}
             <div id="questions">
               <div class="form-group">
                 <label>Question</label>
                 <button class="btn btn-danger btn-xs pull-right">Delete</button>
-                <input class="form-control question-input">
+                <input type="text" class="form-control question-input">
               </div>
             </div>
+            <input type="hidden" name="questions" id="questions-input">
             <button type="submit" id="submit-questions" class="btn btn-success pull-right">Submit</button>
           </form>
         </div>

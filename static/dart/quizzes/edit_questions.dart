@@ -57,13 +57,13 @@ void submitQuestions(Event e) {
   e.preventDefault();
 
   List questions = collectQuestions();
-  String data = JSON.encode({'questions': collectQuestions()});
+  String data = JSON.encode(collectQuestions());
 
-  HttpRequest request = new HttpRequest();
-  String url = JSON.decode(context['context'])['submit_questions_url'];
-  request.open('POST', url);
-  request.setRequestHeader('X-CSRFToken', cookiesToMap()['csrftoken']);
-  request.send(data);
+  InputElement questionsInput = querySelector('#questions-input');
+  questionsInput.value = data;
+
+  FormElement form = querySelector('#questions-form');
+  form.submit();
 }
 
 
