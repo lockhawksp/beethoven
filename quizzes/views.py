@@ -66,7 +66,11 @@ def edit_article(request, quiz_id):
 
 @login_required
 def edit_questions(request, quiz_id):
-    pass
+    quiz = get_object_or_404(MetaQuiz, pk=quiz_id)
+
+    if request.method == 'GET':
+        context = {'quiz_id': quiz_id}
+        return render(request, 'quizzes/edit_questions.html', context)
 
 
 @login_required

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Questions</h3>
+        </div>
+        <div class="panel-body">
+          <button id="add-question" class="btn btn-primary">Add</button>
+          <form role="form">
+            <div id="questions">
+              <div class="form-group">
+                <label>Question</label>
+                <button class="btn btn-danger btn-xs pull-right">Delete</button>
+                <input class="form-control question-input">
+              </div>
+            </div>
+            <button type="submit" id="submit-questions" class="btn btn-success pull-right">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  var _context = {
+    submit_questions_url: "{% url 'quizzes:edit_questions' quiz_id %}"
+  };
+  var context = JSON.stringify(_context);
+</script>
+<script type="application/dart" src="{% static 'dart/quizzes/edit_questions.dart' %}"></script>
+<script src="{% static 'dart/packages/browser/dart.js' %}"></script>
+{% endblock %}
