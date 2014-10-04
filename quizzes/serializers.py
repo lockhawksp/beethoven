@@ -47,7 +47,5 @@ class QuizSerializer(serializers.ModelSerializer):
             'questions',
             'created_at',
             'updated_at',
-            'due',
-            'attempted',
-            'last_attempt'
+            'due'
         )

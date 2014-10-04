@@ -1,11 +1,11 @@
-from quizzes.models import Article, MetaQuiz
+from quizzes.models import Article, Quiz
 
 
-def create_meta_quiz(course):
-    meta_quiz = MetaQuiz()
-    meta_quiz.course = course
-    meta_quiz.save()
-    return meta_quiz
+def create_quiz(course):
+    quiz = Quiz()
+    quiz.course = course
+    quiz.save()
+    return quiz
 
 
 def create_article(quiz, title, content, source_url=None):

@@ -5,10 +5,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework import generics, mixins
 
 from courses.models import Course
-from quizzes.models import Article, MetaQuiz, Quiz
+from quizzes.models import Article, Quiz
 from quizzes.serializers import (ArticleSerializer,
                                  QuizSerializer)
-from quizzes.services import create_meta_quiz, create_article
+from quizzes.services import create_quiz, create_article
 from quizzes.forms import EditArticleForm
 
 
@@ -23,14 +23,14 @@ def create(request):
     else:
         course_id = int(request.POST['course'])
         course = get_object_or_404(Course, pk=course_id)
-        meta_quiz = create_meta_quiz(course)
-        kwargs = {'quiz_id': meta_quiz.id}
+        quiz = create_quiz(course)
+        kwargs = {'quiz_id': quiz.id}
         return redirect(reverse('quizzes:edit_article', kwargs=kwargs))
 
 
 @login_required
 def edit_article(request, quiz_id):
-    quiz = get_object_or_404(MetaQuiz, pk=quiz_id)
+    quiz = get_object_or_404(Quiz, pk=quiz_id)
 
     if request.method == 'GET':
         context = {'quiz_id': quiz_id}
@@ -66,7 +66,7 @@ def edit_article(request, quiz_id):
 
 @login_required
 def edit_questions(request, quiz_id):
-    quiz = get_object_or_404(MetaQuiz, pk=quiz_id)
+    quiz = get_object_or_404(Quiz, pk=quiz_id)
 
     if request.method == 'GET':
         context = {'quiz_id': quiz_id}

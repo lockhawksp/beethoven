@@ -16,7 +16,7 @@ class Article(models.Model):
         return self.title
 
 
-class MetaQuiz(models.Model):
+class Quiz(models.Model):
     course = models.ForeignKey(Course)
     article = models.ForeignKey(Article, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -30,23 +30,12 @@ class MetaQuiz(models.Model):
         return str(self.pk)
 
 
-class Quiz(models.Model):
-    # Staff only
-    course = models.ForeignKey(Course)
-    article = models.ForeignKey(Article)
-    meta_id = models.CharField(max_length=36)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(null=True)
+class AnswerSheet(models.Model):
+    quiz = models.ForeignKey(Quiz)
     assigned_to = models.ForeignKey(Profile)
-    due = models.DateTimeField(null=True)
-    created_by = models.ManyToManyField(
-        Profile, related_name='created_quizzes'
-    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     scored = models.BooleanField(default=False)
-
-    # Student only
-    attempted = models.BooleanField(default=False)
-    last_attempt = models.DateTimeField(null=True)
 
     def __str__(self):
         return str(self.pk)
@@ -66,7 +55,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     # Staff only
-    quiz = models.ForeignKey(Quiz)
+    answer_sheet = models.ForeignKey(AnswerSheet)
     question = models.ForeignKey(Question)
     correct = models.NullBooleanField(null=True)
 
