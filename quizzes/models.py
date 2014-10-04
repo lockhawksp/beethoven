@@ -27,7 +27,7 @@ class MetaQuiz(models.Model):
     # )
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
 
 class Quiz(models.Model):
@@ -49,7 +49,7 @@ class Quiz(models.Model):
     last_attempt = models.DateTimeField(null=True)
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
 
 class Question(models.Model):
