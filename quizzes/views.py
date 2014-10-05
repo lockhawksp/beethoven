@@ -1,3 +1,5 @@
+import json
+
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -8,7 +10,7 @@ from courses.models import Course
 from quizzes.models import Article, Quiz
 from quizzes.serializers import (ArticleSerializer,
                                  QuizSerializer)
-from quizzes.services import create_quiz, create_article
+from quizzes.services import create_quiz, create_article, update_questions
 from quizzes.forms import EditArticleForm
 
 
@@ -71,6 +73,23 @@ def edit_questions(request, quiz_id):
     if request.method == 'GET':
         context = {'quiz_id': quiz_id}
         return render(request, 'quizzes/edit_questions.html', context)
+
+    else:
+        if 'questions' not in request.POST:
+            context = {
+                'quiz_id': quiz_id,
+                'errors': ['Invalid data.']
+            }
+            return render(request, 'quizzes/edit_questions.html', context)
+
+        new_questions = json.loads(request.POST['questions'])
+        update_questions(quiz, new_questions)
+        return redirect(reverse('quizzes:index'))
+
+
+@login_required
+def index(request):
+    pass
 
 
 @login_required
