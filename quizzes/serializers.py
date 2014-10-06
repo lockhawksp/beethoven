@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from quizzes.models import Article, Quiz, Question
+from quizzes.models import Article, Quiz, Question, Answer, AnswerSheet
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -29,6 +29,36 @@ class QuestionSerializer(serializers.ModelSerializer):
             'id',
             'question',
             'sequence',
+        )
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+
+    question = serializers.PrimaryKeyRelatedField()
+
+    class Meta(object):
+        model = Answer
+        fields = (
+            'id',
+            'question',
+            'answer',
+            'created_at',
+            'updated_at'
+        )
+
+
+class AnswerSheetSerializer(serializers.ModelSerializer):
+
+    answers = AnswerSerializer(many=True)
+
+    class Meta(object):
+        model = AnswerSheet
+        fields = (
+            'id',
+            'answers',
+            'created_at',
+            'updated_at',
+            'scored'
         )
 
 

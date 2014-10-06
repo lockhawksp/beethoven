@@ -9,6 +9,8 @@ Map _context = null;
 // the input element is for
 Map answerInputIds = {};
 
+Map questionIdToAnswerId = {};
+
 
 getContext(String key) {
   if (_context == null) {
@@ -124,8 +126,9 @@ void renderQuiz(responseText) {
 List collectAnswers() {
   List answers = [];
   for (String answerId in answerInputIds.keys) {
+    int questionId = answerInputIds[answerId];
     Map answer = {
-        'question_id': answerInputIds[answerId],
+        'id': questionIdToAnswerId[questionId],
         'answer': (querySelector('#$answerId') as InputElement).value
     };
     answers.add(answer);
@@ -146,6 +149,20 @@ void submitAnswers(Event e) {
 }
 
 
+void fetchAnswerSheet(String url) {
+  var request = HttpRequest.getString(url).then(answerSheetFetched);
+}
+
+
+void answerSheetFetched(String responseText) {
+  Map data = JSON.decode(responseText);
+  for (Map answer in data['answers']) {
+    questionIdToAnswerId[answer['question']] = answer['id'];
+  }
+}
+
+
 void main() {
   fetchQuiz(getContext('quiz_details_url'));
+  fetchAnswerSheet(getContext('answer_sheet_details_url'));
 }

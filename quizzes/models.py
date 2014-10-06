@@ -55,7 +55,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     # Staff only
-    answer_sheet = models.ForeignKey(AnswerSheet)
+    answer_sheet = models.ForeignKey(AnswerSheet, related_name='answers')
     question = models.ForeignKey(Question)
     correct = models.NullBooleanField(null=True)
 

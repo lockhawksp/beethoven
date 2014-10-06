@@ -1,4 +1,4 @@
-from quizzes.models import Article, Quiz
+from quizzes.models import Article, Quiz, AnswerSheet, Answer
 
 
 def create_quiz(course):
@@ -48,3 +48,25 @@ def update_questions(quiz, new_questions):
             question=question,
             sequence=seq_dict[question]
         )
+
+
+def create_answer_sheet(assigned_to, quiz):
+    answer_sheet = AnswerSheet(quiz=quiz, assigned_to=assigned_to)
+    answer_sheet.save()
+
+    questions = quiz.questions.all()
+
+    for question in questions:
+        answer_sheet.answers.create(question=question)
+
+    return answer_sheet
+
+
+def update_answers(new_answers):
+    for a in new_answers:
+        answer_id = a['id']
+        answer_str = a['answer']
+
+        current_answer = Answer.objects.get(pk=answer_id)
+        current_answer.answer = answer_str
+        current_answer.save()

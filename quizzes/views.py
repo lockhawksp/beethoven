@@ -7,10 +7,15 @@ from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework import generics, mixins
 
 from courses.models import Course
-from quizzes.models import Article, Quiz
+from quizzes.models import Article, Quiz, AnswerSheet
 from quizzes.serializers import (ArticleSerializer,
-                                 QuizSerializer)
-from quizzes.services import create_quiz, create_article, update_questions
+                                 QuizSerializer,
+                                 AnswerSheetSerializer)
+from quizzes.services import (create_quiz,
+                              create_article,
+                              update_questions,
+                              create_answer_sheet,
+                              update_answers)
 from quizzes.forms import EditArticleForm
 
 
@@ -94,8 +99,34 @@ def index(request):
 
 @login_required
 def attempt(request, quiz_id):
-    context = {'quiz_id': quiz_id}
-    return render(request, 'quizzes/attempt.html', context)
+    quiz = get_object_or_404(Quiz, pk=quiz_id)
+    p = request.user.profile
+
+    if request.method == 'GET':
+        try:
+            answer_sheet = AnswerSheet.objects.get(quiz=quiz, assigned_to=p)
+        except AnswerSheet.DoesNotExist:
+            answer_sheet = None
+
+        if answer_sheet is None:
+            answer_sheet = create_answer_sheet(p, quiz)
+
+        context = {'quiz_id': quiz_id, 'answer_sheet': answer_sheet}
+        return render(request, 'quizzes/attempt.html', context)
+
+    else:
+        data = json.loads(request.body.decode('utf-8'))
+
+        if 'answers' not in data:
+            context = {
+                'quiz_id': quiz_id,
+                'errors': ['Invalid data.']
+            }
+            return render(request, 'quizzes/attempt.html', context)
+
+        update_answers(data['answers'])
+
+        return redirect(reverse('quizzes:index'))
 
 
 class ArticleDetails(mixins.RetrieveModelMixin, generics.GenericAPIView):
@@ -111,6 +142,15 @@ class QuizDetails(mixins.RetrieveModelMixin, generics.GenericAPIView):
 
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+
+class AnswerSheetDetails(mixins.RetrieveModelMixin, generics.GenericAPIView):
+
+    queryset = AnswerSheet.objects.all()
+    serializer_class = AnswerSheetSerializer
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)

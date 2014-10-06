@@ -27,7 +27,8 @@
 <script>
   var _context = {
     submit_answers_url: "{% url 'quizzes:attempt' quiz_id %}",
-    quiz_details_url: "{% url 'quizzes_api:quiz_details' quiz_id %}"
+    quiz_details_url: "{% url 'quizzes_api:quiz_details' quiz_id %}",
+    answer_sheet_details_url: "{% url 'quizzes_api:answer_sheet_details' answer_sheet.id %}"
   };
   var context = JSON.stringify(_context);
 </script>
