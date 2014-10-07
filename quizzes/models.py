@@ -30,7 +30,7 @@ class Quiz(models.Model):
 
 class AnswerSheet(models.Model):
     quiz = models.ForeignKey(Quiz)
-    assigned_to = models.ForeignKey(Profile)
+    owner = models.ForeignKey(Profile)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     scored = models.BooleanField(default=False)

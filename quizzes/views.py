@@ -105,7 +105,7 @@ def attempt(request, quiz_id):
 
     if request.method == 'GET':
         try:
-            answer_sheet = AnswerSheet.objects.get(quiz=quiz, assigned_to=p)
+            answer_sheet = AnswerSheet.objects.get(quiz=quiz, owner=p)
         except AnswerSheet.DoesNotExist:
             answer_sheet = None
 

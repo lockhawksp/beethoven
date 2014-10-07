@@ -49,8 +49,8 @@ def update_questions(quiz, new_questions):
         )
 
 
-def create_answer_sheet(assigned_to, quiz):
-    answer_sheet = AnswerSheet(quiz=quiz, assigned_to=assigned_to)
+def create_answer_sheet(owner, quiz):
+    answer_sheet = AnswerSheet(quiz=quiz, owner=owner)
     answer_sheet.save()
 
     questions = quiz.questions.all()
