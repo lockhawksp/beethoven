@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'debug_toolbar.apps.DebugToolbarConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -111,3 +112,7 @@ SITE_ID = 1
 ACCOUNT_ADAPTER = 'accounts.adapter.AccountAdapter'
 
 LOGIN_URL = 'account_login'
+
+DEBUG_TOOLBAR_CONFIG = {
+    'JQUERY_URL': '/static/libs/jquery/jquery-1.11.1.min.js'
+}
