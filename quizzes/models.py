@@ -18,7 +18,7 @@ class Article(models.Model):
 
 class Quiz(models.Model):
     course = models.ForeignKey(Course)
-    article = models.ForeignKey(Article, null=True)
+    article = models.OneToOneField(Article, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     due = models.DateTimeField(null=True)
