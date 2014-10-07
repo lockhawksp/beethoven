@@ -34,6 +34,7 @@ class AnswerSheet(models.Model):
     owner = models.ForeignKey(Profile)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    submitted = models.BooleanField(default=False)
     scored = models.BooleanField(default=False)
 
     def __str__(self):

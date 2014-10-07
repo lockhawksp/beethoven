@@ -127,6 +127,10 @@ def attempt(request, quiz_id):
 
         update_answers(data['answers'])
 
+        answer_sheet = AnswerSheet.objects.get(owner=p, quiz=quiz)
+        answer_sheet.submitted = True
+        answer_sheet.save()
+
         return redirect(reverse('quizzes:index'))
 
 
