@@ -25,6 +25,11 @@ class Quiz(models.Model):
     owner = models.ForeignKey(Profile, related_name='created_quizzes')
     assigned_to = models.ManyToManyField(Profile)
 
+    class Meta(object):
+        permissions = (
+            ('edit_quiz', 'Edit quiz'),
+        )
+
     def __str__(self):
         return str(self.pk)
 

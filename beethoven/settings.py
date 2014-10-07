@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'guardian',
     'rest_framework',
     'accounts',
     'courses',
@@ -104,7 +105,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend'
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend'
 )
 
 SITE_ID = 1
@@ -116,3 +118,5 @@ LOGIN_URL = 'account_login'
 DEBUG_TOOLBAR_CONFIG = {
     'JQUERY_URL': '/static/libs/jquery/jquery-1.11.1.min.js'
 }
+
+ANONYMOUS_USER_ID = -1
