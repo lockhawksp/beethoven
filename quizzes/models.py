@@ -22,9 +22,7 @@ class Quiz(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     due = models.DateTimeField(null=True)
-    # created_by = models.ManyToManyField(
-    #     Profile, related_name='created_quizzes'
-    # )
+    owner = models.ForeignKey(Profile, related_name='created_quizzes')
 
     def __str__(self):
         return str(self.pk)

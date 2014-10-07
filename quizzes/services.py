@@ -1,9 +1,8 @@
 from quizzes.models import Article, Quiz, AnswerSheet, Answer
 
 
-def create_quiz(course):
-    quiz = Quiz()
-    quiz.course = course
+def create_quiz(owner, course):
+    quiz = Quiz(owner=owner, course=course)
     quiz.save()
     return quiz
 

@@ -21,8 +21,9 @@ from quizzes.forms import EditArticleForm
 
 @login_required
 def create(request):
+    p = request.user.profile
+
     if request.method == 'GET':
-        p = request.user.profile
         courses = p.instructor_in.all()
         context = {'courses': courses}
         return render(request, 'quizzes/create.html', context)
@@ -30,7 +31,7 @@ def create(request):
     else:
         course_id = int(request.POST['course'])
         course = get_object_or_404(Course, pk=course_id)
-        quiz = create_quiz(course)
+        quiz = create_quiz(p, course)
         kwargs = {'quiz_id': quiz.id}
         return redirect(reverse('quizzes:edit_article', kwargs=kwargs))
 
