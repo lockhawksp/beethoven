@@ -23,6 +23,7 @@ class Quiz(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     due = models.DateTimeField(null=True)
     owner = models.ForeignKey(Profile, related_name='created_quizzes')
+    assigned_to = models.ManyToManyField(Profile)
 
     def __str__(self):
         return str(self.pk)

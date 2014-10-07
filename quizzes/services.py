@@ -1,9 +1,15 @@
 from quizzes.models import Article, Quiz, AnswerSheet, Answer
 
 
-def create_quiz(owner, course):
+def create_quiz(owner, course, assigned_to=None):
     quiz = Quiz(owner=owner, course=course)
     quiz.save()
+
+    if assigned_to is None:
+        assigned_to = course.students.all()
+
+    quiz.assigned_to.add(*assigned_to)
+
     return quiz
 
 
