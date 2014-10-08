@@ -2,6 +2,7 @@ import json
 
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from rest_framework import generics, mixins
@@ -156,6 +157,17 @@ def attempt(request, quiz_id):
         answer_sheet.save()
 
         return redirect(reverse('quizzes:index'))
+
+
+@login_required
+def delete_quiz(request, quiz_id):
+    if request.method == 'POST':
+        quiz = get_object_or_404(Quiz, pk=quiz_id)
+        if request.user.has_perm('delete_quiz', quiz):
+            quiz.delete()
+            return JsonResponse({'msg': 'deleted'})
+        else:
+            return HttpResponseForbidden()
 
 
 class ArticleDetails(mixins.RetrieveModelMixin, generics.GenericAPIView):
