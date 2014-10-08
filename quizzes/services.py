@@ -7,7 +7,9 @@ def create_quiz(owner, course, assigned_to=None):
     quiz = Quiz(owner=owner, course=course)
     quiz.save()
 
+    # Assign permissions for owner of quiz
     assign_perm('edit_quiz', owner.user, quiz)
+    assign_perm('delete_quiz', owner.user, quiz)
 
     if assigned_to is None:
         assigned_to = course.students.all()
