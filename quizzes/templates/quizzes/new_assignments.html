@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">New Assignments</h3>
+        </div>
+        {% if not quizzes %}
+        <div class="panel-body">
+          All Done!
+        </div>
+        {% endif %}
+        {% if quizzes %}
+        <table class="table">
+          <tr>
+            <th>#</th>
+            <th>Quiz</th>
+            <th>Actions</th>
+          </tr>
+          {% for q in quizzes %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ q.article.title }}</td>
+            <td><a href="{% url 'quizzes:attempt' q.id %}">Attempt</a></td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

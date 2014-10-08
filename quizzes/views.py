@@ -124,6 +124,23 @@ def index(request):
 
 
 @login_required
+def new_assignments(request):
+    if request.method == 'GET':
+        p = request.user.profile
+
+        # Find all quizzes
+        q1 = Quiz.objects.filter(assigned_to=p)
+        # Find IDs of the quizzes already done
+        q2 = AnswerSheet.objects.filter(
+            owner=p, submitted=True).values_list('quiz__id', flat=True)
+        # Find new quizzes
+        quizzes = q1.exclude(id__in=q2)
+
+        context = {'quizzes': quizzes}
+        return render(request, 'quizzes/new_assignments.html', context)
+
+
+@login_required
 def attempt(request, quiz_id):
     quiz = get_object_or_404(Quiz, pk=quiz_id)
     p = request.user.profile
