@@ -65,7 +65,7 @@ def edit_article(request, quiz_id):
     quiz = get_object_or_404(Quiz, pk=quiz_id)
 
     if request.method == 'GET':
-        context = {'quiz_id': quiz_id}
+        context = {'quiz': quiz}
         return render(request, 'quizzes/edit_article.html', context)
 
     else:
