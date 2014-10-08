@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Quiz</h3>
+        </div>
+        <div class="panel-body">
+          <form method="post" action="{% url 'quizzes:edit_quiz' quiz_id %}" id="quiz">
+          {% csrf_token %}
+            <div class="form-group">
+              <label for="course-name">Course</label>
+              <p class="form-control-static" id="course-name">{{ course.name }}</p>
+            </div>
+            <button type="submit" class="btn btn-success">Next</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

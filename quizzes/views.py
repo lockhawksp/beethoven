@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from rest_framework import generics, mixins
 
+from guardian.shortcuts import get_objects_for_user
+
 from courses.models import Course
 from quizzes.models import Article, Quiz, AnswerSheet
 from quizzes.serializers import (ArticleSerializer,
@@ -32,6 +34,27 @@ def create(request):
         course_id = int(request.POST['course'])
         course = get_object_or_404(Course, pk=course_id)
         quiz = create_quiz(p, course)
+        kwargs = {'quiz_id': quiz.id}
+        return redirect(reverse('quizzes:edit_article', kwargs=kwargs))
+
+
+@login_required
+def edit_quizzes(request):
+    if request.method == 'GET':
+        quizzes = get_objects_for_user(request.user, 'edit_quiz', klass=Quiz)
+        context = {'quizzes': quizzes}
+        return render(request, 'quizzes/edit_quizzes.html', context)
+
+
+@login_required
+def edit_quiz(request, quiz_id):
+    quiz = get_object_or_404(Quiz, pk=quiz_id)
+
+    if request.method == 'GET':
+        context = {'course': quiz.course, 'quiz_id': quiz_id}
+        return render(request, 'quizzes/edit_quiz.html', context)
+
+    else:
         kwargs = {'quiz_id': quiz.id}
         return redirect(reverse('quizzes:edit_article', kwargs=kwargs))
 
@@ -95,7 +118,8 @@ def edit_questions(request, quiz_id):
 
 @login_required
 def index(request):
-    pass
+    if request.method == 'GET':
+        return render(request, 'quizzes/index.html')
 
 
 @login_required
