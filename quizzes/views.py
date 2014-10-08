@@ -173,7 +173,10 @@ def attempt(request, quiz_id):
         answer_sheet.submitted = True
         answer_sheet.save()
 
-        return redirect(reverse('quizzes:index'))
+        return JsonResponse({
+            'msg': 'answers saved.',
+            'next': reverse('quizzes:index')
+        })
 
 
 @login_required

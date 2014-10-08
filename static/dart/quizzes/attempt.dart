@@ -142,6 +142,13 @@ void submitAnswers(Event e) {
   String data = JSON.encode({'answers': collectAnswers()});
 
   HttpRequest request = new HttpRequest();
+  request.onReadyStateChange.listen((_) {
+    Map data = JSON.decode(request.responseText);
+
+    if (data.containsKey('msg') && data['msg'] == 'answers saved.') {
+      window.location.assign(data['next']);
+    }
+  });
   String url = getContext('submit_answers_url');
   request.open('POST', url);
   request.setRequestHeader('X-CSRFToken', cookiesToMap()['csrftoken']);
