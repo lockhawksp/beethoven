@@ -54,6 +54,9 @@ class Question(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta(object):
+        ordering = ('sequence',)
+
     def __str__(self):
         return self.question
 
