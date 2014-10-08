@@ -11,6 +11,8 @@ Map answerInputIds = {};
 
 Map questionIdToAnswerId = {};
 
+Map questionIdToAnswer = {};
+
 
 getContext(String key) {
   if (_context == null) {
@@ -69,8 +71,9 @@ String getAnswerInputId(int id) {
 
 Element questionDataToView(Map data) {
   int id = data['id'];
-  String question = data['question'];
   int seq = data['sequence'];
+  String question = data['question'];
+  String answer = questionIdToAnswer[id];
 
   DivElement questionDiv = new DivElement();
   questionDiv.classes.add('form-group');
@@ -80,6 +83,7 @@ Element questionDataToView(Map data) {
   InputElement answerInput = new InputElement();
   answerInput.classes.add('form-control answer-input');
   answerInput.id = answerId;
+  answerInput.value = answer;
   answerInput.attributes['data-question-id'] = id.toString();
 
   // Label
@@ -163,7 +167,9 @@ void fetchAnswerSheet(String url) {
 
 void answerSheetFetched(String responseText) {
   Map data = JSON.decode(responseText);
+
   for (Map answer in data['answers']) {
+    questionIdToAnswer[answer['question']] = answer['answer'];
     questionIdToAnswerId[answer['question']] = answer['id'];
   }
 }
