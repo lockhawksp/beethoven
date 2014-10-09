@@ -28,6 +28,7 @@ class Quiz(models.Model):
     class Meta(object):
         permissions = (
             ('edit_quiz', 'Edit quiz'),
+            ('attempt_quiz', 'Attempt quiz')
         )
 
     def __str__(self):

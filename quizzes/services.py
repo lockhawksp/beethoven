@@ -15,6 +15,8 @@ def create_quiz(owner, course, assigned_to=None):
         assigned_to = course.students.all()
 
     quiz.assigned_to.add(*assigned_to)
+    for p in assigned_to:
+        assign_perm('attempt_quiz', p.user, quiz)
 
     return quiz
 

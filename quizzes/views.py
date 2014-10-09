@@ -143,7 +143,11 @@ def new_assignments(request):
 @login_required
 def attempt(request, quiz_id):
     quiz = get_object_or_404(Quiz, pk=quiz_id)
-    p = request.user.profile
+    u = request.user
+    p = u.profile
+
+    if not u.has_perm('attempt_quiz', quiz):
+        return HttpResponseForbidden()
 
     if request.method == 'GET':
         try:
