@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
+from beethoven import settings
+
 
 urlpatterns = patterns(
     '',
@@ -11,3 +13,11 @@ urlpatterns = patterns(
     url(r'^', include('quizzes.urls', namespace='quizzes')),
     url(r'^api/', include('quizzes.api_urls', namespace='quizzes_api'))
 )
+
+if not settings.PRODUCTION:
+    urlpatterns += patterns(
+        '',
+        (r'^static/(?P<path>.*)$',
+         'django.views.static.serve',
+         {'document_root': settings.STATIC_ROOT})
+    )
