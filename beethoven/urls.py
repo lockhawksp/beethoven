@@ -6,7 +6,7 @@ from beethoven import settings
 
 urlpatterns = patterns(
     '',
-    url(r'^$', 'beethoven.views.index', name='index'),
+    url(r'^$', 'accounts.views.index', name='index'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('allauth.urls')),
     url(r'^', include('courses.urls', namespace='courses')),

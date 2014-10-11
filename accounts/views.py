@@ -1,3 +1,9 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def index(request):
+    if not request.user.is_authenticated():
+        return render(request, 'account/index.html')
+
+    else:
+        return render(request, 'account/user_home.html')

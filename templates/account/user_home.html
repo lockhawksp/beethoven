@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">As a Student</h3>
+        </div>
+        <div class="panel-body">
+          <p><a href="{% url 'quizzes:new_assignments' %}">New Assignments</a></p>
+          <p><a href="">Done Assignments</a></p>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">As an Instructor</h3>
+        </div>
+        <div class="panel-body">
+          <p><a href="{% url 'quizzes:create' %}">Create Quiz</a></p>
+          <p><a href="{% url 'quizzes:edit' %}">Edit Quiz</a></p>
+          <p><a href="">Mark Answers</a></p>
+          <p><a href="">View Marked Answers</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
