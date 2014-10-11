@@ -14,7 +14,7 @@ urlpatterns = patterns(
     url(r'^api/', include('quizzes.api_urls', namespace='quizzes_api'))
 )
 
-if not settings.PRODUCTION:
+if settings.PRODUCTION:
     urlpatterns += patterns(
         '',
         (r'^static/(?P<path>.*)$',
