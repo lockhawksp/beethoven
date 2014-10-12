@@ -48,7 +48,10 @@ List collectQuestions() {
   List<String> questions = [];
   List questionInputs = querySelectorAll('input.question-input');
   for (InputElement questionInput in questionInputs) {
-    questions.add(questionInput.value);
+    String question = questionInput.value;
+    if (question != '') {
+      questions.add(questionInput.value);
+    }
   }
   return questions;
 }
