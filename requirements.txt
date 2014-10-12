@@ -3,6 +3,7 @@ dj-database-url==0.3.0
 dj-static==0.0.6
 django-allauth==0.18.0
 django-guardian==1.2.4
+django-sslify==0.2.3
 django-toolbelt==0.0.1
 djangorestframework==2.4.3
 gunicorn==19.1.1

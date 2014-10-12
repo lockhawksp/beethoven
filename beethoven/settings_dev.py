@@ -16,3 +16,5 @@ WSGI_APPLICATION = 'beethoven.wsgi.application'
 DEBUG_TOOLBAR_CONFIG = {
     'JQUERY_URL': '/static/libs/jquery/jquery-1.11.1.min.js'
 }
+
+SSLIFY_DISABLE = True
