@@ -13,6 +13,8 @@ Map questionIdToAnswerId = {};
 
 Map questionIdToAnswer = {};
 
+List quizQuestions;
+
 
 getContext(String key) {
   if (_context == null) {
@@ -32,6 +34,21 @@ Map cookiesToMap() {
     cookies[key] = value;
   }
   return cookies;
+}
+
+
+void fetchQuiz(String url) {
+  var request = HttpRequest.getString(url).then(quizFetched);
+}
+
+
+void quizFetched(String responseText) {
+  Map data = JSON.decode(responseText);
+
+  String articleDetailsUrl = data['article'];
+  fetchArticle(articleDetailsUrl);
+
+  quizQuestions = data['questions'];
 }
 
 
@@ -59,8 +76,58 @@ void renderArticle(String responseText) {
 }
 
 
-void fetchQuiz(String url) {
-  var request = HttpRequest.getString(url).then(renderQuiz);
+void takeQuiz(Event e) {
+  fetchAnswerSheet(getContext('answer_sheet_details_url'));
+  makeArticleColumnHalfWidth();
+  (e.target as ButtonElement).style.visibility = 'hidden';
+}
+
+
+void fetchAnswerSheet(String url) {
+  var request = HttpRequest.getString(url).then(answerSheetFetched);
+}
+
+
+void answerSheetFetched(String responseText) {
+  Map data = JSON.decode(responseText);
+
+  for (Map answer in data['answers']) {
+    questionIdToAnswer[answer['question']] = answer['answer'];
+    questionIdToAnswerId[answer['question']] = answer['id'];
+  }
+
+  showQuestions();
+}
+
+
+void makeArticleColumnHalfWidth() {
+  querySelector('#article-column').classes = ['col-sm-6'];
+}
+
+
+void showQuestions() {
+  HeadingElement panelTitle = new HeadingElement.h3();
+  panelTitle.text = 'Questions';
+
+  DivElement panelHeading = new DivElement();
+  panelHeading.classes.add('panel-heading');
+  panelHeading.children.add(panelTitle);
+
+  DivElement panelBody = new DivElement();
+  panelBody.classes.add('panel-body');
+  panelBody.children.add(questionsDataToView(quizQuestions));
+
+  DivElement questionPanel = new DivElement();
+  questionPanel.classes.add('panel panel-default');
+  questionPanel.children..add(panelHeading)
+                        ..add(panelBody);
+
+  DivElement questionColumn = new DivElement();
+  questionColumn.classes.add('col-sm-6');
+  questionColumn.children.add(questionPanel);
+
+  // Dart does not have insertAfter
+  querySelector('#article-column').insertAdjacentElement('afterend', questionColumn);
 }
 
 
@@ -98,8 +165,10 @@ Element questionDataToView(Map data) {
 }
 
 
-void renderQuestions(List questions) {
-  DivElement questionsDiv = querySelector('#questions') as DivElement;
+DivElement questionsDataToView(List questions) {
+  DivElement questionsDiv = new DivElement();
+  questionsDiv.id = 'questions';
+
   for (Map data in questions) {
     questionsDiv.children.add(questionDataToView(data));
     int id = data['id'];
@@ -112,18 +181,9 @@ void renderQuestions(List questions) {
   submitButton.id = 'submit-answers';
   submitButton.text = 'Submit answers';
   submitButton.onClick.listen(submitAnswers);
-
   questionsDiv.children.add(submitButton);
-}
 
-
-void renderQuiz(responseText) {
-  Map data = JSON.decode(responseText);
-  String articleDetailsUrl = data['article'];
-  List questions = data['questions'];
-
-  fetchArticle(articleDetailsUrl);
-  renderQuestions(questions);
+  return questionsDiv;
 }
 
 
@@ -160,22 +220,7 @@ void submitAnswers(Event e) {
 }
 
 
-void fetchAnswerSheet(String url) {
-  var request = HttpRequest.getString(url).then(answerSheetFetched);
-}
-
-
-void answerSheetFetched(String responseText) {
-  Map data = JSON.decode(responseText);
-
-  for (Map answer in data['answers']) {
-    questionIdToAnswer[answer['question']] = answer['answer'];
-    questionIdToAnswerId[answer['question']] = answer['id'];
-  }
-}
-
-
 void main() {
   fetchQuiz(getContext('quiz_details_url'));
-  fetchAnswerSheet(getContext('answer_sheet_details_url'));
+  querySelector('#take-quiz').onClick.listen(takeQuiz);
 }

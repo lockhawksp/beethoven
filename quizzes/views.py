@@ -20,6 +20,7 @@ from quizzes.services import (create_quiz,
                               create_answer_sheet,
                               update_answers)
 from quizzes.forms import EditArticleForm
+from quizzes.queries import find_new_assignments, find_done_assignments
 
 
 @login_required
@@ -127,15 +128,16 @@ def index(request):
 def new_assignments(request):
     if request.method == 'GET':
         p = request.user.profile
+        quizzes = find_new_assignments(p)
+        context = {'quizzes': quizzes}
+        return render(request, 'quizzes/new_assignments.html', context)
 
-        # Find all quizzes
-        q1 = Quiz.objects.filter(assigned_to=p)
-        # Find IDs of the quizzes already done
-        q2 = AnswerSheet.objects.filter(
-            owner=p, submitted=True).values_list('quiz__id', flat=True)
-        # Find new quizzes
-        quizzes = q1.exclude(id__in=q2)
 
+@login_required
+def done_assignments(request):
+    if request.method == 'GET':
+        p = request.user.profile
+        quizzes = find_done_assignments(p)
         context = {'quizzes': quizzes}
         return render(request, 'quizzes/new_assignments.html', context)
 
