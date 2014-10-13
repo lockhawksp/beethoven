@@ -216,8 +216,8 @@ void submitAnswers(Event e) {
       }
 
       else if (data.containsKey('error')) {
-        // Have not figured out how to show error message.
-        window.alert(data['error']);
+        querySelector('#error-message').text = data['error'];
+        context.callMethod(r'$', ['#error-dialog']).callMethod('modal');
       }
     }
   });
