@@ -18,12 +18,18 @@
           <tr>
             <th>#</th>
             <th>Quiz</th>
+            <th>Due</th>
             <th>Actions</th>
           </tr>
           {% for q in quizzes %}
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ q.article.title }}</td>
+            {% if q.due %}
+            <td>{{ q.due }}</td>
+            {% else %}
+            <td>No due time</td>
+            {% endif %}
             <td><a href="{% url 'quizzes:attempt' q.id %}">Attempt</a></td>
           </tr>
           {% endfor %}
