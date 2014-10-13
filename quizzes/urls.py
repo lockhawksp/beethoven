@@ -8,7 +8,10 @@ urlpatterns = patterns(
     url(r'^quizzes/edit/$', 'quizzes.views.edit_quizzes', name='edit'),
     url(r'^quizzes/new_assignments/$',
         'quizzes.views.new_assignments',
-        name='new_assignments')
+        name='new_assignments'),
+    url(r'^quizzes/done_assignments/$',
+        'quizzes.views.done_assignments',
+        name='done_assignments')
 )
 
 urlpatterns += patterns(
