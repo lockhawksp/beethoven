@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4 col-sm-offset-4">
+    {% if error %}
+      <div class="alert alert-danger" role="alert" id="errors">
+        <p class="bg-danger">{{ error }}</p>
+      </div>
+    {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

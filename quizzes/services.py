@@ -1,3 +1,5 @@
+from django.utils.timezone import now
+
 from guardian.shortcuts import assign_perm
 
 from quizzes.models import Article, Quiz, AnswerSheet, Answer
@@ -61,3 +63,10 @@ def update_answers(new_answers):
         current_answer = Answer.objects.get(pk=answer_id)
         current_answer.answer = answer_str
         current_answer.save()
+
+
+def is_due(quiz):
+    if quiz.due is None:
+        return False
+    else:
+        return quiz.due < now()

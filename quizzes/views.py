@@ -18,7 +18,8 @@ from quizzes.services import (create_quiz,
                               create_article,
                               update_questions,
                               create_answer_sheet,
-                              update_answers)
+                              update_answers,
+                              is_due)
 from quizzes.forms import EditArticleForm
 from quizzes.queries import find_new_assignments, find_done_assignments
 
@@ -148,10 +149,16 @@ def attempt(request, quiz_id):
     u = request.user
     p = u.profile
 
+    due_error = 'This assignment is due. You cannot edit it.'
+
     if not u.has_perm('attempt_quiz', quiz):
         return HttpResponseForbidden()
 
     if request.method == 'GET':
+        if is_due(quiz):
+            context = {'error': due_error}
+            return render(request, 'quizzes/error.html', context)
+
         try:
             answer_sheet = AnswerSheet.objects.get(quiz=quiz, owner=p)
         except AnswerSheet.DoesNotExist:
@@ -164,6 +171,9 @@ def attempt(request, quiz_id):
         return render(request, 'quizzes/attempt.html', context)
 
     else:
+        if is_due(quiz):
+            return JsonResponse({'error': due_error})
+
         data = json.loads(request.body.decode('utf-8'))
 
         if 'answers' not in data:

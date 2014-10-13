@@ -207,18 +207,26 @@ void submitAnswers(Event e) {
 
   HttpRequest request = new HttpRequest();
   request.onReadyStateChange.listen((_) {
-    Map data = JSON.decode(request.responseText);
+    if (request.readyState == HttpRequest.DONE &&
+        (request.status == 200 || request.status == 0)) {
+      Map data = JSON.decode(request.responseText);
 
-    if (data.containsKey('msg') && data['msg'] == 'answers saved.') {
-      window.location.assign(data['next']);
+      if (data.containsKey('msg') && data['msg'] == 'answers saved.') {
+        window.location.assign(data['next']);
+      }
+
+      else if (data.containsKey('error')) {
+        // Have not figured out how to show error message.
+        window.alert(data['error']);
+      }
     }
   });
+
   String url = getContext('submit_answers_url');
   request.open('POST', url);
   request.setRequestHeader('X-CSRFToken', cookiesToMap()['csrftoken']);
   request.send(data);
 }
-
 
 void main() {
   fetchQuiz(getContext('quiz_details_url'));
