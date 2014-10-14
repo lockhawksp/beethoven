@@ -5,7 +5,7 @@ from guardian.shortcuts import assign_perm
 from quizzes.models import Article, Quiz, AnswerSheet, Answer
 
 
-def create_quiz(owner, course, assigned_to=None):
+def create_quiz(owner, course, assigned_to=None, deadline=None):
     quiz = Quiz(owner=owner, course=course)
     quiz.save()
 
@@ -19,6 +19,10 @@ def create_quiz(owner, course, assigned_to=None):
     quiz.assigned_to.add(*assigned_to)
     for p in assigned_to:
         assign_perm('attempt_quiz', p.user, quiz)
+
+    if deadline:
+        quiz.due = deadline
+        quiz.save()
 
     return quiz
 

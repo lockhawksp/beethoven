@@ -1,4 +1,7 @@
+import datetime
 import json
+
+from dateutil import parser
 
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -35,8 +38,21 @@ def create(request):
 
     else:
         course_id = int(request.POST['course'])
+
+        deadline_str = request.POST.get('deadline', None)
+        if deadline_str:
+            try:
+                deadline = parser.parse(deadline_str)
+            except:
+                return JsonResponse({'error': 'deadline is invalid'})
+
+            if deadline.tzname() != 'UTC':
+                return JsonResponse({'error': 'only utc deadline is accepted'})
+        else:
+            deadline = None
+
         course = get_object_or_404(Course, pk=course_id)
-        quiz = create_quiz(p, course)
+        quiz = create_quiz(p, course, deadline=deadline)
         kwargs = {'quiz_id': quiz.id}
         return redirect(reverse('quizzes:edit_article', kwargs=kwargs))
 
