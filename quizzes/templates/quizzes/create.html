@@ -1,29 +1,66 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'libs/pickadate.js/themes/default.css' %}">
+<link rel="stylesheet" href="{% static 'libs/pickadate.js/themes/default.date.css' %}">
+<link rel="stylesheet" href="{% static 'libs/pickadate.js/themes/default.time.css' %}">
+<script src="{% static 'libs/pickadate.js/picker.js' %}"></script>
+<script src="{% static 'libs/pickadate.js/picker.date.js' %}"></script>
+<script src="{% static 'libs/pickadate.js/picker.time.js' %}"></script>
+{% endblock %}
 
 {% block body %}
 <div class="container">
   <div class="row">
-    <div class="col-sm-10 col-sm-offset-1">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Quiz</h3>
+    <div class="col-sm-8 col-sm-offset-2">
+      <form method="post" action="{% url 'quizzes:create' %}" id="quiz">
+      {% csrf_token %}
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Quiz</h3>
+          </div>
+          <div class="panel-body">
+              <div class="form-group">
+                <label for="select-course">Course</label>
+                <select name="course" class="form-control" id="select-course">
+                {% for c in courses %}
+                  <option value="{{ c.id }}">{{ c.name }}</option>
+                {% endfor %}
+                </select>
+              </div>
+          </div>
         </div>
-        <div class="panel-body">
-          <form method="post" action="{% url 'quizzes:create' %}" id="quiz">
-          {% csrf_token %}
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Deadline</h3>
+          </div>
+          <div class="panel-body">
             <div class="form-group">
-              <label for="select-course">Course</label>
-              <select name="course" class="form-control" id="select-course">
-              {% for c in courses %}
-                <option value="{{ c.id }}">{{ c.name }}</option>
-              {% endfor %}
-              </select>
+              <label for="deadline-date">Date</label>
+              <input id="deadline-date" class="form-control">
             </div>
-            <button type="submit" class="btn btn-success">Next</button>
-          </form>
+            <div class="form-group">
+              <label for="deadline-time">Time</label>
+              <input id="deadline-time" class="form-control">
+            </div>
+            <input type="hidden" name="deadline" id="deadline">
+          </div>
         </div>
-      </div>
+        <button type="submit" class="btn btn-success" id="create-quiz">Next</button>
+      </form>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  var $deadlineDateInput = $('#deadline-date').pickadate();
+  var deadlineDatePicker = $deadlineDateInput.pickadate('picker');
+  var $deadlineTimeInput = $('#deadline-time').pickatime();
+  var deadlineTimePicker = $deadlineTimeInput.pickatime('picker')
+</script>
+<script type="application/dart" src="{% static 'dart/quizzes/create.dart' %}"></script>
+<script src="{% static 'dart/packages/browser/dart.js' %}"></script>
 {% endblock %}
