@@ -107,6 +107,7 @@ void makeArticleColumnHalfWidth() {
 
 void showQuestions() {
   HeadingElement panelTitle = new HeadingElement.h3();
+  panelTitle.classes = ['panel-title'];
   panelTitle.text = 'Questions';
 
   DivElement panelHeading = new DivElement();
