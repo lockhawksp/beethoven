@@ -156,7 +156,7 @@ def done_assignments(request):
         p = request.user.profile
         quizzes = find_done_assignments(p)
         context = {'quizzes': quizzes}
-        return render(request, 'quizzes/new_assignments.html', context)
+        return render(request, 'quizzes/done_assignments.html', context)
 
 
 @login_required
