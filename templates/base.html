@@ -35,7 +35,11 @@
           <li><a href="{% url 'quizzes:index' %}">Quizzes</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
+        {% if not request.user.is_authenticated %}
           <li><a href="{% url 'account_login' %}">Sign in</a></li>
+        {% else %}
+          <li><a href="{% url 'index' %}">{{ request.user.profile }}</a></li>
+        {% endif %}
         </ul>
       </div>
     </div>
