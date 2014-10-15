@@ -100,28 +100,42 @@ void answerSheetFetched(String responseText) {
 }
 
 
+DivElement createPanel(String title, List<Element> panelBodyElements) {
+  HeadingElement panelTitle = new HeadingElement.h3();
+  panelTitle.classes = ['panel-title'];
+  panelTitle.text = title;
+
+  DivElement panelHeading = new DivElement();
+  panelHeading.classes = ['panel-heading'];
+  panelHeading.children = [panelTitle];
+
+  DivElement panelBody = new DivElement();
+  panelBody.classes = ['panel-body'];
+  panelBody.children = panelBodyElements;
+
+  DivElement panel = new DivElement();
+  panel.classes = ['panel panel-default'];
+  panel.children = [panelHeading, panelBody];
+
+  return panel;
+}
+
+
 void makeArticleColumnHalfWidth() {
-  querySelector('#article-column').classes = ['col-sm-6'];
+  String title = querySelector('#article-title').text;
+  DivElement articleContent = querySelector('#article-content');
+  DivElement panel = createPanel(title, [articleContent]);
+
+  DivElement column = querySelector('#article-column');
+  column.classes = ['col-sm-6'];
+  column.children = [panel];
 }
 
 
 void showQuestions() {
-  HeadingElement panelTitle = new HeadingElement.h3();
-  panelTitle.classes = ['panel-title'];
-  panelTitle.text = 'Questions';
-
-  DivElement panelHeading = new DivElement();
-  panelHeading.classes.add('panel-heading');
-  panelHeading.children.add(panelTitle);
-
-  DivElement panelBody = new DivElement();
-  panelBody.classes.add('panel-body');
-  panelBody.children.add(questionsDataToView(quizQuestions));
-
-  DivElement questionPanel = new DivElement();
-  questionPanel.classes.add('panel panel-default');
-  questionPanel.children..add(panelHeading)
-                        ..add(panelBody);
+  DivElement questionPanel = createPanel(
+    'Questions', [questionsDataToView(quizQuestions)]
+  );
 
   DivElement questionColumn = new DivElement();
   questionColumn.classes.add('col-sm-6');
