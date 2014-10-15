@@ -38,7 +38,12 @@
         {% if not request.user.is_authenticated %}
           <li><a href="{% url 'account_login' %}">Sign in</a></li>
         {% else %}
-          <li><a href="{% url 'index' %}">{{ request.user.profile }}</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ request.user.profile }}</a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="{% url 'account_logout' %}">Sign out</a></li>
+            </ul>
+          </li>
         {% endif %}
         </ul>
       </div>
