@@ -69,6 +69,9 @@ def edit_quizzes(request):
 def edit_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, pk=quiz_id)
 
+    if not request.user.has_perm('edit_quiz', quiz):
+        return HttpResponseForbidden()
+
     if request.method == 'GET':
         context = {'course': quiz.course, 'quiz_id': quiz_id}
         return render(request, 'quizzes/edit_quiz.html', context)
@@ -81,6 +84,9 @@ def edit_quiz(request, quiz_id):
 @login_required
 def edit_article(request, quiz_id):
     quiz = get_object_or_404(Quiz, pk=quiz_id)
+
+    if not request.user.has_perm('edit_quiz', quiz):
+        return HttpResponseForbidden()
 
     if request.method == 'GET':
         context = {'quiz': quiz}
@@ -117,6 +123,9 @@ def edit_article(request, quiz_id):
 @login_required
 def edit_questions(request, quiz_id):
     quiz = get_object_or_404(Quiz, pk=quiz_id)
+
+    if not request.user.has_perm('edit_quiz', quiz):
+        return HttpResponseForbidden()
 
     if request.method == 'GET':
         context = {'quiz_id': quiz_id}
