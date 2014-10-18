@@ -1,4 +1,3 @@
-import datetime
 import json
 
 from dateutil import parser
@@ -24,7 +23,9 @@ from quizzes.services import (create_quiz,
                               update_answers,
                               is_due)
 from quizzes.forms import EditArticleForm
-from quizzes.queries import find_new_assignments, find_done_assignments
+from quizzes.queries import (find_new_assignments,
+                             new_assignment_number,
+                             find_done_assignments)
 
 
 @login_required
@@ -147,7 +148,11 @@ def edit_questions(request, quiz_id):
 @login_required
 def index(request):
     if request.method == 'GET':
-        return render(request, 'quizzes/index.html')
+        p = request.user.profile
+        context = {
+            'new_assignment_number': new_assignment_number(p)
+        }
+        return render(request, 'quizzes/index.html', context)
 
 
 @login_required

@@ -15,6 +15,11 @@ def find_new_assignments(profile):
     return q.exclude(id__in=find_done_quiz_ids(profile))
 
 
+def new_assignment_number(profile):
+    q = find_new_assignments(profile)
+    return q.count()
+
+
 def find_done_assignments(profile):
     q = Quiz.objects.filter(assigned_to=profile)
     return q.filter(id__in=find_done_quiz_ids(profile))

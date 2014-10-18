@@ -9,7 +9,12 @@
           <h3 class="panel-title">As a Student</h3>
         </div>
         <div class="panel-body">
-          <p><a href="{% url 'quizzes:new_assignments' %}">New Assignments</a></p>
+          <p>
+            <a href="{% url 'quizzes:new_assignments' %}">New Assignments</a>
+            {% if new_assignment_number > 0 %}
+            <span class="badge">{{ new_assignment_number }}</span>
+            {% endif %}
+          </p>
           <p><a href="{% url 'quizzes:done_assignments' %}">Done Assignments</a></p>
         </div>
       </div>
