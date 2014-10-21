@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Solutions</h3>
+        </div>
+        <div class="panel-body">
+        {% for q in questions %}
+          <div class="form-group">
+            <label>{{ q.sequence }}. {{ q.question }}</label>
+            <input class="form-control solution-input" type="text">
+          </div>
+        {% endfor %}
+          <button class="btn btn-success" type="submit">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
