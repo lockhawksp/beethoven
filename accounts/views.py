@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.core.urlresolvers import reverse
+from django.shortcuts import redirect, render
 
 
 def index(request):
@@ -6,4 +7,4 @@ def index(request):
         return render(request, 'account/index.html')
 
     else:
-        return render(request, 'account/user_home.html')
+        return redirect(reverse('quizzes:index'))
