@@ -28,6 +28,9 @@ urlpatterns += patterns(
     url(r'quiz/(?P<quiz_id>\d+)/questions/edit/$',
         'quizzes.views.edit_questions',
         name='edit_questions'),
+    url(r'quiz/(?P<quiz_id>\d+)/solutions/edit/$',
+        'quizzes.views.edit_solutions',
+        name='edit_solutions'),
     url(r'quiz/(?P<quiz_id>\d+)/attempt/$',
         'quizzes.views.attempt',
         name='attempt')

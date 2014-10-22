@@ -21,7 +21,8 @@ from quizzes.services import (create_quiz,
                               update_questions,
                               create_answer_sheet,
                               update_answers,
-                              is_due)
+                              is_due,
+                              update_solutions)
 from quizzes.forms import EditArticleForm
 from quizzes.queries import (find_new_assignments,
                              new_assignment_number,
@@ -234,6 +235,31 @@ def delete_quiz(request, quiz_id):
             return JsonResponse({'msg': 'deleted'})
         else:
             return HttpResponseForbidden()
+
+
+@login_required
+def edit_solutions(request, quiz_id):
+    quiz = get_object_or_404(Quiz, pk=quiz_id)
+
+    if not request.user.has_perm('edit_quiz', quiz):
+        return HttpResponseForbidden()
+
+    if request.method == 'GET':
+        context = {
+            'quiz_id': quiz_id,
+            'questions': quiz.questions.all()
+        }
+        return render(request, 'quizzes/edit_solutions.html', context)
+
+    else:
+        data = json.loads(request.body.decode('utf-8'))
+        new_solutions = data['solutions']
+        update_solutions(new_solutions)
+
+        return JsonResponse({
+            'msg': 'solutions saved.',
+            'next': reverse('index')
+        })
 
 
 class ArticleDetails(mixins.RetrieveModelMixin, generics.GenericAPIView):

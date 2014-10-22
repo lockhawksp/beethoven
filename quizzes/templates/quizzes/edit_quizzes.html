@@ -29,6 +29,7 @@
             <td>{{ q.course.name }}</td>
             <td>
               <a href="{% url 'quizzes:edit_quiz' q.id %}" class="btn btn-primary btn-xs">Edit</a>
+              <a href="{% url 'quizzes:edit_solutions' q.id %}" class="btn btn-primary btn-xs">Solution</a>
               <button class="btn btn-danger btn-xs delete-quiz" data-delete-quiz-url="{% url 'quizzes:delete_quiz' q.id %}">Delete</button>
             </td>
           </tr>

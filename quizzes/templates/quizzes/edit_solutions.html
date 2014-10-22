@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block body %}
 <div class="container">
@@ -12,13 +13,21 @@
         {% for q in questions %}
           <div class="form-group">
             <label>{{ q.sequence }}. {{ q.question }}</label>
-            <input class="form-control solution-input" type="text">
+            <input class="form-control solution-input" type="text" data-question-id="{{ q.id }}" value="{{ q.standard_answer }}">
           </div>
         {% endfor %}
-          <button class="btn btn-success" type="submit">Submit</button>
+          <button class="btn btn-success" type="submit" id="submit-solutions">Submit</button>
         </div>
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  var submit_solution_url = "{% url 'quizzes:edit_solutions' quiz_id %}";
+</script>
+<script type="application/dart" src="{% static 'dart/quizzes/edit_solutions.dart' %}"></script>
+<script src="{% static 'dart/packages/browser/dart.js' %}"></script>
 {% endblock %}
