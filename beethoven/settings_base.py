@@ -18,7 +18,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'accounts',
     'courses',
-    'quizzes'
+    'quizzes',
+    'notifications'
 )
 
 MIDDLEWARE_CLASSES = (
