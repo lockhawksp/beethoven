@@ -1,8 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
-import notifications
-
 from beethoven import settings
 
 
@@ -13,8 +11,7 @@ urlpatterns = patterns(
     url(r'^', include('allauth.urls')),
     url(r'^', include('courses.urls', namespace='courses')),
     url(r'^', include('quizzes.urls', namespace='quizzes')),
-    url(r'^api/', include('quizzes.api_urls', namespace='quizzes_api')),
-    url('^inbox/notifications/', include(notifications.urls)),
+    url(r'^api/', include('quizzes.api_urls', namespace='quizzes_api'))
 )
 
 if settings.PRODUCTION:
