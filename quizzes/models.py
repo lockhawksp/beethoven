@@ -24,6 +24,7 @@ class Quiz(models.Model):
     due = models.DateTimeField(null=True)
     owner = models.ForeignKey(Profile, related_name='created_quizzes')
     assigned_to = models.ManyToManyField(Profile)
+    solution_available = models.BooleanField(default=False)
 
     class Meta(object):
         permissions = (

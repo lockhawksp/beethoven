@@ -1,8 +1,11 @@
+import json
+
 from django.test import Client, TestCase
 from django.contrib.auth.models import User
 
 from accounts.models import Profile
 from courses.models import Course
+from quizzes.models import Quiz
 
 
 class EditSolutionsTests(TestCase):
@@ -53,3 +56,18 @@ class EditSolutionsTests(TestCase):
     def test_student_cant_edit_solutions(self):
         resp = self.student_client.get('/quiz/1/solutions/edit/')
         self.assertEqual(resp.status_code, 403)
+
+    def test_field_solution_available(self):
+        quiz = Quiz.objects.get(pk=1)
+        self.assertEqual(quiz.solution_available, False)
+
+        data = {'solutions': [
+            {'question_id': 1, 'solution': '1'},
+            {'question_id': 2, 'solution': '2'},
+            {'question_id': 3, 'solution': '3'},
+            {'question_id': 4, 'solution': '4'},
+        ]}
+        self.instructor_client.post('/quiz/1/solutions/edit/', data=json.dumps(data), content_type='application/json')
+
+        quiz = Quiz.objects.get(pk=1)
+        self.assertEqual(quiz.solution_available, True)
