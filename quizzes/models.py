@@ -50,7 +50,7 @@ class AnswerSheet(models.Model):
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, related_name='questions')
     question = models.CharField(max_length=100)
-    standard_answer = models.CharField(max_length=100, null=True)
+    standard_answer = models.CharField(max_length=100)
     sequence = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
