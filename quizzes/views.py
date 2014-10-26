@@ -256,6 +256,10 @@ def edit_solutions(request, quiz_id):
         new_solutions = data['solutions']
         update_solutions(new_solutions)
 
+        if not quiz.solution_available:
+            quiz.solution_available = True
+            quiz.save()
+
         return JsonResponse({
             'msg': 'solutions saved.',
             'next': reverse('index')
