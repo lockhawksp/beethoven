@@ -12,7 +12,7 @@ from rest_framework import generics, mixins
 from guardian.shortcuts import get_objects_for_user
 
 from courses.models import Course
-from quizzes.models import Article, Quiz, AnswerSheet
+from quizzes.models import Article, Quiz, AnswerSheet, Question
 from quizzes.serializers import (ArticleSerializer,
                                  QuizSerializer,
                                  AnswerSheetSerializer)
@@ -264,6 +264,30 @@ def edit_solutions(request, quiz_id):
             'msg': 'solutions saved.',
             'next': reverse('index')
         })
+
+
+@login_required
+def view_solutions(request, quiz_id):
+    if request.method == 'GET':
+        quiz = get_object_or_404(Quiz, pk=quiz_id)
+        p = request.user.profile
+
+        # After student views the answer, he cannot change his answers
+        answer_sheet = AnswerSheet.objects.get(quiz=quiz, owner=p)
+        answer_sheet.confirmed = True
+        answer_sheet.save()
+
+        questions = Question.objects.filter(quiz=quiz)
+        student_answers = answer_sheet.answers.all()
+
+        # Build a map between question_id and answer
+        answers = {a.question_id: a.answer for a in student_answers}
+
+        for question in questions:
+            question.answer = answers[question.id]
+
+        context = {'questions': questions}
+        return render(request, 'quizzes/view_solutions.html', context)
 
 
 class ArticleDetails(mixins.RetrieveModelMixin, generics.GenericAPIView):

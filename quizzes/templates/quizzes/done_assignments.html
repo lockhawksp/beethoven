@@ -23,8 +23,18 @@
           {% for q in quizzes %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ q.article.title }}</td>
-            <td><a href="{% url 'quizzes:attempt' q.id %}">Edit Answers</a></td>
+            <td>
+            {% if q.solution_available %}
+              <span class="label label-success">Solution Available</span>
+            {% endif %}
+              {{ q.article.title }}
+            </td>
+            <td>
+              <a class="btn btn-primary btn-xs" href="{% url 'quizzes:attempt' q.id %}">Edit Answers</a>
+              {% if q.solution_available %}
+              <a class="btn btn-primary btn-xs view-solutions" data-solution-url="{% url 'quizzes:view_solutions' q.id %}">View Solutions</a>
+              {% endif %}
+            </td>
           </tr>
           {% endfor %}
         </table>
@@ -33,4 +43,32 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="warning-dialog" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="modal-title">Warning</h4>
+      </div>
+      <div class="modal-body">
+        <p id="warning-message">Once you view the solutions, you won't be able to edit your answers.</p>
+      </div>
+      <div class="modal-footer">
+        <a href="" class="btn btn-danger" id="view-solutions-confirm">Confirm</a>
+        <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  $(document).ready(function() {
+    $('.view-solutions').click(function() {
+      $('#view-solutions-confirm').attr('href', $(this).data('solution-url'));
+      $('#warning-dialog').modal();
+    })
+  });
+</script>
 {% endblock %}

@@ -31,6 +31,9 @@ urlpatterns += patterns(
     url(r'quiz/(?P<quiz_id>\d+)/solutions/edit/$',
         'quizzes.views.edit_solutions',
         name='edit_solutions'),
+    url(r'quiz/(?P<quiz_id>\d+)/solutions/view/$',
+        'quizzes.views.view_solutions',
+        name='view_solutions'),
     url(r'quiz/(?P<quiz_id>\d+)/attempt/$',
         'quizzes.views.attempt',
         name='attempt')
