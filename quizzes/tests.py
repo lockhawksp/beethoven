@@ -8,43 +8,59 @@ from courses.models import Course
 from quizzes.models import Quiz
 
 
+def create_test_profile(username, password):
+    User.objects.create_user(username, password=password)
+    return Profile.objects.get(user__username=username)
+
+
+def create_test_course(name, owner, instructors=(), students=()):
+    course = Course()
+    course.name = name
+    course.owner = owner
+    course.save()
+    course.instructors.add(*instructors)
+    course.students.add(*students)
+
+
+def login_test_user(username, password):
+    client = Client()
+    client.post('/login/', data={
+        'login': username,
+        'password': password
+    })
+    return client
+
+
+def create_test_quiz(client, course_id, title, content, questions=()):
+    resp = client.post('/quizzes/create/', data={
+        'course': course_id,
+    })
+
+    resp = client.post(resp.url, data={
+        'title': title,
+        'content': content
+    })
+
+    client.post(resp.url, data={
+        'questions': json.dumps(list(questions))
+    })
+
+
 class EditSolutionsTests(TestCase):
 
     def setUp(self):
-        User.objects.create_user('0', password='0')
-        User.objects.create_user('1', password='0')
-        instructor = Profile.objects.get(user__username='0')
-        student = Profile.objects.get(user__username='1')
-
-        course = Course()
-        course.name = '0'
-        course.owner = instructor
-        course.save()
-        course.instructors.add(instructor)
-        course.students.add(student)
-
-        instructor_client = Client()
-        instructor_client.post('/login/', data={
-            'login': '0',
-            'password': '0'
-        })
-
-        instructor_client.post('/quizzes/create/', data={
-            'course': '1',
-        })
-        instructor_client.post('/quiz/1/article/edit/', data={
-            'title': '0',
-            'content': '0'
-        })
-        instructor_client.post('/quiz/1/questions/edit/', data={
-            'questions': '["1", "2", "3", "4"]'
-        })
-
-        student_client = Client()
-        student_client.post('/login/', data={
-            'login': '1',
-            'password': '0'
-        })
+        instructor = create_test_profile('0', '0')
+        student = create_test_profile('1', '0')
+        instructor_client = login_test_user('0', '0')
+        student_client = login_test_user('1', '0')
+        create_test_course(
+            '0',
+            instructor,
+            instructors=(instructor,),
+            students=(student,)
+        )
+        create_test_quiz(instructor_client, 1, '0', '0',
+                         questions=('1', '2', '3', '4'))
 
         self.instructor_client = instructor_client
         self.student_client = student_client
@@ -67,7 +83,11 @@ class EditSolutionsTests(TestCase):
             {'question_id': 3, 'solution': '3'},
             {'question_id': 4, 'solution': '4'},
         ]}
-        self.instructor_client.post('/quiz/1/solutions/edit/', data=json.dumps(data), content_type='application/json')
+        self.instructor_client.post(
+            '/quiz/1/solutions/edit/',
+            data=json.dumps(data),
+            content_type='application/json'
+        )
 
         quiz = Quiz.objects.get(pk=1)
         self.assertEqual(quiz.solution_available, True)
