@@ -46,6 +46,21 @@ def create_test_quiz(client, course_id, title, content, questions=()):
     })
 
 
+def create_test_solutions(client):
+    data = {'solutions': [
+        {'question_id': 1, 'solution': '1'},
+        {'question_id': 2, 'solution': '2'},
+        {'question_id': 3, 'solution': '3'},
+        {'question_id': 4, 'solution': '4'},
+    ]}
+    resp = client.post(
+        '/quiz/1/solutions/edit/',
+        data=json.dumps(data),
+        content_type='application/json'
+    )
+    return resp
+
+
 class EditSolutionsTests(TestCase):
 
     def setUp(self):
@@ -69,8 +84,14 @@ class EditSolutionsTests(TestCase):
         resp = self.instructor_client.get('/quiz/1/solutions/edit/')
         self.assertEqual(resp.status_code, 200)
 
+        resp = create_test_solutions(self.instructor_client)
+        self.assertEqual(resp.status_code, 200)
+
     def test_student_cant_edit_solutions(self):
         resp = self.student_client.get('/quiz/1/solutions/edit/')
+        self.assertEqual(resp.status_code, 403)
+
+        resp = create_test_solutions(self.student_client)
         self.assertEqual(resp.status_code, 403)
 
     def test_field_solution_available(self):
