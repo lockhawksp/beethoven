@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from rest_framework import generics, mixins
 
-from guardian.shortcuts import get_objects_for_user
+from guardian.shortcuts import get_objects_for_user, remove_perm
 
 from courses.models import Course
 from quizzes.models import Article, Quiz, AnswerSheet, Question
@@ -270,12 +270,18 @@ def edit_solutions(request, quiz_id):
 def view_solutions(request, quiz_id):
     if request.method == 'GET':
         quiz = get_object_or_404(Quiz, pk=quiz_id)
-        p = request.user.profile
+        u = request.user
+        p = u.profile
 
         # After student views the answer, he cannot change his answers
         answer_sheet = AnswerSheet.objects.get(quiz=quiz, owner=p)
         answer_sheet.confirmed = True
         answer_sheet.save()
+
+        # Remove student's permission to change answers
+        perm = 'attempt_quiz'
+        if request.user.has_perm(perm, quiz):
+            remove_perm(perm, u, quiz)
 
         questions = Question.objects.filter(quiz=quiz)
         student_answers = answer_sheet.answers.all()
