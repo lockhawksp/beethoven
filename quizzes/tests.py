@@ -138,3 +138,7 @@ class EditSolutionsTests(TestCase):
             content_type='application/json'
         )
         self.assertEqual(resp.status_code, 403)
+
+    def test_student_can_only_view_solutions_after_submitting_answers(self):
+        resp = self.student_client.get('/quiz/1/solutions/view/')
+        self.assertEqual(resp.status_code, 403)
