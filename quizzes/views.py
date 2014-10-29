@@ -273,8 +273,16 @@ def view_solutions(request, quiz_id):
         u = request.user
         p = u.profile
 
+        # Make sure student has already answered the quiz
+        try:
+            answer_sheet = AnswerSheet.objects.get(quiz=quiz, owner=p)
+        except AnswerSheet.DoesNotExist:
+            answer_sheet = None
+
+        if answer_sheet is None or not answer_sheet.submitted:
+            return HttpResponseForbidden()
+
         # After student views the answer, he cannot change his answers
-        answer_sheet = AnswerSheet.objects.get(quiz=quiz, owner=p)
         answer_sheet.confirmed = True
         answer_sheet.save()
 

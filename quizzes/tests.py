@@ -112,3 +112,33 @@ class EditSolutionsTests(TestCase):
 
         quiz = Quiz.objects.get(pk=1)
         self.assertEqual(quiz.solution_available, True)
+
+    def test_student_cant_change_answers_after_viewing_solutions(self):
+        url = '/quiz/1/attempt/'
+        resp = self.student_client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+        data = {'answers': [
+            {'id': 1, 'answer': '1'},
+            {'id': 2, 'answer': '2'},
+            {'id': 3, 'answer': '3'},
+            {'id': 4, 'answer': '4'},
+        ]}
+        resp = self.student_client.post(
+            url,
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(resp.status_code, 200)
+
+        self.student_client.get('/quiz/1/solutions/view/')
+        resp = self.student_client.post(
+            url,
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(resp.status_code, 403)
+
+    def test_student_can_only_view_solutions_after_submitting_answers(self):
+        resp = self.student_client.get('/quiz/1/solutions/view/')
+        self.assertEqual(resp.status_code, 403)
